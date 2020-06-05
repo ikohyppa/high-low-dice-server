@@ -1,0 +1,35 @@
+{
+  "name": "high-low-dice-server",
+  "version": "1.0.0",
+  "description": "High-Low-Dice BE server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ikohyppa/high-low-dice-server.git"
+  },
+  "keywords": [
+    "express",
+    "socket.io"
+  ],
+  "author": "Iko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ikohyppa/high-low-dice-server/issues"
+  },
+  "homepage": "https://github.com/ikohyppa/high-low-dice-server#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "socket.io": "^2.3.0",
+    "uuid": "^7.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
