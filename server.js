@@ -15,14 +15,23 @@ app.get('/room', function (req, res, next) {
     name: req.query.name,
     id: uuidv4()
   };
+  const user = req.query.user;
   rooms[room.id] = room;
-  res.json(room);
+  const response = {
+    id: rooms[room.id].id,
+    name: rooms[room.id].name,
+    user: user,
+  }
+  res.json(response);
 });
 
 app.get('/room/:roomId', function (req, res, next) {
   const roomId = req.params.roomId;
+  const user = req.query.user;
   const response = {
-    ...rooms[roomId],
+    id: rooms[roomId].id,
+    name: rooms[roomId].name,
+    user: user,
   };
   res.json(response);
 });
