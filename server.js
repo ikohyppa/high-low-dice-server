@@ -42,6 +42,15 @@ app.get('/room/:roomId', function (req, res, next) {
   res.json(response);
 });
 
+io.on('connection', function (socket) {
+  socket.on('event://send-newplayer', function (msg) {
+    console.log('got', msg);
+    const payload = JSON.parse(msg);
+    console.log('payload', payload);
+    socket.broadcast.emit('event://get-newPlayer', payload);
+  });
+});
+
 http.listen(8000, function () {
   console.log('listening on port 8000');
 });
