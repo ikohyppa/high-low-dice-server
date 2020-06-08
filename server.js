@@ -44,10 +44,16 @@ app.get('/room/:roomId', function (req, res, next) {
 
 io.on('connection', function (socket) {
   socket.on('event://send-newplayer', function (msg) {
-    console.log('got', msg);
+    console.log('got newPlayer', msg);
     const payload = JSON.parse(msg);
     console.log('payload', payload);
     socket.broadcast.emit('event://get-newPlayer', payload);
+  });
+  socket.on('event://send-newGame', function (msg) {
+    console.log('got newGame', msg);
+    const payload = JSON.parse(msg);
+    console.log('payload', payload);
+    socket.broadcast.emit('event://get-newGame', payload);
   });
 });
 
