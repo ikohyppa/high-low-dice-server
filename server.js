@@ -42,18 +42,36 @@ app.get('/room/:roomId', function (req, res, next) {
   res.json(response);
 });
 
+const rolldice = () => {
+  const zeroValues = [0, 0, 0, 0, 0, 0];
+  const randomValues = zeroValues.map(() => {
+    return Math.floor(Math.random() * 6) + 1;
+  });
+  return randomValues;
+};
+
 io.on('connection', function (socket) {
   socket.on('event://send-newplayer', function (msg) {
     console.log('got newPlayer', msg);
     const payload = JSON.parse(msg);
     console.log('payload', payload);
-    socket.broadcast.emit('event://get-newPlayer', payload);
+    socket.broadcast.emit('event://get-newplayer', payload);
   });
-  socket.on('event://send-newGame', function (msg) {
+  socket.on('event://send-newgame', function (msg) {
     console.log('got newGame', msg);
     const payload = JSON.parse(msg);
     console.log('payload', payload);
-    socket.broadcast.emit('event://get-newGame', payload);
+    socket.broadcast.emit('event://get-newgame', payload);
+  });
+  socket.on('event://send-rolldice', function (msg) {
+    console.log('got rollDice', msg);
+	let payload = JSON.parse(msg);
+	console.log(payload);
+    const diceValues = rolldice();
+	console.log(diceValues)
+    payload = {...payload, dice: diceValues};
+    console.log("payload", payload);
+    io.emit('event://get-rolldice', payload);
   });
 });
 
