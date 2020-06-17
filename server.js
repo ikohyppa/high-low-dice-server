@@ -65,13 +65,18 @@ io.on('connection', function (socket) {
   });
   socket.on('event://send-rolldice', function (msg) {
     console.log('got rollDice', msg);
-	let payload = JSON.parse(msg);
-	console.log(payload);
+    let payload = JSON.parse(msg);
+    console.log(payload);
     const diceValues = rolldice();
-	console.log(diceValues)
-    payload = {...payload, dice: diceValues};
-    console.log("payload", payload);
+    console.log(diceValues);
+    payload = { ...payload, dice: diceValues };
+    console.log('payload', payload);
     io.emit('event://get-rolldice', payload);
+  });
+  socket.on('event://send-playerready', function (msg) {
+    console.log('got playerready', msg);
+    let payload = JSON.parse(msg);
+    io.emit('event://get-playerready', payload);
   });
 });
 
