@@ -61,7 +61,7 @@ io.on('connection', function (socket) {
     console.log('got newGame', msg);
     const payload = JSON.parse(msg);
     console.log('payload', payload);
-    socket.broadcast.emit('event://get-newgame', payload);
+    io.emit('event://get-newgame', payload);
   });
   socket.on('event://send-rolldice', function (msg) {
     console.log('got rollDice', msg);
