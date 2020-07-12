@@ -12,6 +12,7 @@ let playerlist = {};
 
 app.use(cors());
 
+// creating a room
 app.get('/room', function (req, res, next) {
   const room = {
     name: req.query.name,
@@ -46,13 +47,11 @@ app.get('/room', function (req, res, next) {
   }
 });
 
+// joining a room
 app.get('/room/:roomId', function (req, res, next) {
   const roomId = req.params.roomId;
   const user = req.query.user;
-  console.log(roomId);
-  console.log(user);
   const roomIds = _.map(rooms, room => room.id);
-  console.log(roomIds)
   if (!_.includes(roomIds, roomId)) {
     const response = {
       status: 'error',
@@ -71,8 +70,6 @@ app.get('/room/:roomId', function (req, res, next) {
     res.json(response);
   } else {
     playerlist[roomId].push(user);
-    console.log(rooms);
-    console.log(playerlist);
     const response = {
       status: 'ok',
       data: {
@@ -96,6 +93,7 @@ const rolldice = () => {
   return randomValues;
 };
 
+// websocket connections
 io.on('connection', function (socket) {
   socket.on('event://send-newplayer', function (msg) {
     console.log('got newPlayer', msg);
