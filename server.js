@@ -97,29 +97,43 @@ const rolldice = () => {
 io.on('connection', function (socket) {
   socket.on('event://send-newplayer', function (msg) {
     console.log('got newPlayer', msg);
-    const payload = JSON.parse(msg);
+    const message = JSON.parse(msg);
+    const payload = {
+      roomName: rooms[message.roomId].name,
+      playerName: message.playerName
+    };
     console.log('payload', payload);
     socket.broadcast.emit('event://get-newplayer', payload);
   });
   socket.on('event://send-newgame', function (msg) {
     console.log('got newGame', msg);
-    const payload = JSON.parse(msg);
+    const message = JSON.parse(msg);
+    const payload = { roomName: rooms[message.roomId].name };
     console.log('payload', payload);
     io.emit('event://get-newgame', payload);
   });
   socket.on('event://send-rolldice', function (msg) {
     console.log('got rollDice', msg);
-    let payload = JSON.parse(msg);
-    console.log(payload);
+    const message = JSON.parse(msg);
     const diceValues = rolldice();
     console.log(diceValues);
-    payload = { ...payload, dice: diceValues };
+    let payload = {
+      ...message,
+      dice: diceValues,
+      roomName: rooms[message.roomId].name
+    };
+    payload = _.omit(payload, 'roomId');
     console.log('payload', payload);
     io.emit('event://get-rolldice', payload);
   });
   socket.on('event://send-playerready', function (msg) {
     console.log('got playerready', msg);
-    let payload = JSON.parse(msg);
+    const message = JSON.parse(msg);
+    let payload = {
+      roomName: rooms[message.roomId].name,
+      playerId: message.playerId
+    };
+    console.log('payload', payload);
     io.emit('event://get-playerready', payload);
   });
 });
