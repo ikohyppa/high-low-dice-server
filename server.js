@@ -16,7 +16,8 @@ app.use(cors());
 app.get('/room', function (req, res, next) {
   const room = {
     name: req.query.name,
-    id: uuidv4()
+    id: uuidv4(),
+    gameOn: false
   };
   const user = req.query.user;
   const roomNames = _.map(rooms, room => room.name);
@@ -49,6 +50,8 @@ app.get('/room', function (req, res, next) {
 
 // joining a room
 app.get('/room/:roomId', function (req, res, next) {
+  console.log('rooms:');
+  console.log(rooms);
   const roomId = req.params.roomId;
   const user = req.query.user;
   const roomIds = _.map(rooms, room => room.id);
@@ -66,6 +69,15 @@ app.get('/room/:roomId', function (req, res, next) {
       data: { userName: user },
       message: '',
       error: `Player named '${user}' is already in the room!`
+    };
+    res.json(response);
+  } else if (rooms[roomId].gameOn) {
+    const roomName = rooms[roomId].name;
+    const response = {
+      status: 'error',
+      data: { roomName: roomName },
+      message: '',
+      error: `Cannot join '${roomName}' because game has already started!`
     };
     res.json(response);
   } else {
@@ -98,16 +110,21 @@ io.on('connection', function (socket) {
   socket.on('event://send-newplayer', function (msg) {
     console.log('got newPlayer', msg);
     const message = JSON.parse(msg);
-    const payload = {
-      roomName: rooms[message.roomId].name,
-      playerName: message.playerName
-    };
-    console.log('payload', payload);
-    socket.broadcast.emit('event://get-newplayer', payload);
+    console.log('rooms:');
+    console.log(rooms);
+    if (!rooms[message.roomId].gameOn) {
+      const payload = {
+        roomName: rooms[message.roomId].name,
+        playerName: message.playerName
+      };
+      console.log('payload', payload);
+      socket.broadcast.emit('event://get-newplayer', payload);
+    }
   });
   socket.on('event://send-newgame', function (msg) {
     console.log('got newGame', msg);
     const message = JSON.parse(msg);
+    rooms[message.roomId].gameOn = true;
     const payload = { roomName: rooms[message.roomId].name };
     console.log('payload', payload);
     io.emit('event://get-newgame', payload);
